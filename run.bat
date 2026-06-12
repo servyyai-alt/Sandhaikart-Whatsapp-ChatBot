@@ -1,4 +1,4 @@
 @echo off
-call venv\Scripts\activate
-uvicorn app.main:app --reload --port 8000
-
+if exist venv\Scripts\activate call venv\Scripts\activate
+if "%PORT%"=="" set PORT=8000
+uvicorn app.main:app --host 0.0.0.0 --port %PORT%

@@ -88,14 +88,30 @@ Set:
 
 ## Run Service
 
+Production / Render start command:
+
 ```bash
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+Local development command:
+
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Or use helper scripts:
 
 - Windows: `run.bat`
 - Mac/Linux: `./run.sh`
+
+For Render, make sure the service start command is exactly:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+Do not use `--reload` in production.
 
 ## Ngrok for Meta Webhook
 
