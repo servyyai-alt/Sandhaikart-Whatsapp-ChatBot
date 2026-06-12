@@ -1,0 +1,57 @@
+venv/
+.env
+*.pyc
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Environment Variables
+.env
+
+# Logs
+*.log
+logs/
+
+# Pytest
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite
+*.db
+*.sqlite3
+
+# Temporary
+*.tmp
+*.temp
+
+# Python cache
+.mypy_cache/
+.ruff_cache/
+
+# Secrets
+*.pem
+*.key

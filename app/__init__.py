@@ -1,0 +1,2 @@
+"""whatsapp-service application package."""
+
