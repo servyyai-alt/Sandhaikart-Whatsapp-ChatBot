@@ -86,7 +86,6 @@ async def send_order_confirmation_message(
                 order_number,
                 amount,
                 payment_status,
-                "https://www.sandhaikart.com/products",
             ],
         )
 
@@ -99,8 +98,6 @@ async def send_order_confirmation_message(
         f"Amount: ₹{amount}\n"
         f"Payment status: {payment_status}\n\n"
         "We will notify you once your order is shipped.\n\n"
-        "Explore more products:\n"
-        "https://www.sandhaikart.com/products\n\n"
         "Thank you for choosing Sandhaikart."
     )
     return await send_text_message(to=to, message=message)
