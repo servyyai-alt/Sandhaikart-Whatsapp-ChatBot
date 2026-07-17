@@ -141,6 +141,7 @@ async def send_tracking_update_message(
     return await send_text_message(to=to, message=message)
 
 
+
 async def _send_whatsapp_message(payload: Dict[str, Any]) -> Dict[str, Any]:
     if not settings.whatsapp_temp_token:
         raise RuntimeError("WHATSAPP_TEMP_TOKEN is missing in environment variables")
