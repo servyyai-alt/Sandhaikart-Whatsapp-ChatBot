@@ -8,6 +8,17 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
+class WhatsAppAPIError(RuntimeError):
+    def __init__(self, status_code: int, message: str, meta_code: int | None = None):
+        super().__init__(message)
+        self.status_code = status_code
+        self.meta_code = meta_code
+
+    @property
+    def retryable(self) -> bool:
+        return self.status_code in {408, 409, 425, 429} or self.status_code >= 500
+
+
 async def send_text_message(to: str, message: str) -> Dict[str, Any]:
     payload = {
         "messaging_product": "whatsapp",
@@ -164,7 +175,21 @@ async def _send_whatsapp_message(payload: Dict[str, Any]) -> Dict[str, Any]:
             response.status_code,
             response.text,
         )
-        raise RuntimeError(f"WhatsApp API request failed with status {response.status_code}")
+        try:
+            error_payload = response.json().get("error") or {}
+        except (ValueError, AttributeError):
+            error_payload = {}
+        meta_code = error_payload.get("code")
+        detail = (
+            (error_payload.get("error_data") or {}).get("details")
+            or error_payload.get("message")
+            or f"WhatsApp API request failed with status {response.status_code}"
+        )
+        raise WhatsAppAPIError(
+            status_code=response.status_code,
+            message=str(detail),
+            meta_code=meta_code if isinstance(meta_code, int) else None,
+        )
 
     try:
         return response.json()

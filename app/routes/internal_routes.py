@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from app.config import settings
 from app.services.whatsapp_client import (
+    WhatsAppAPIError,
     send_order_confirmation_message,
     send_tracking_update_message,
 )
@@ -51,6 +52,13 @@ async def order_confirmation(
         )
         logger.info("WhatsApp order confirmation sent | order=%s | phone=%s", order_number, phone)
         return {"success": True, "response": response}
+    except WhatsAppAPIError as exc:
+        logger.exception("WhatsApp order confirmation rejected | order=%s | phone=%s: %s", order_number, phone, exc)
+        status_code = 503 if exc.retryable else 400
+        raise HTTPException(
+            status_code=status_code,
+            detail={"message": str(exc), "metaCode": exc.meta_code, "retryable": exc.retryable},
+        )
     except Exception as exc:
         logger.exception("WhatsApp order confirmation send failed | order=%s | phone=%s: %s", order_number, phone, exc)
         raise HTTPException(status_code=502, detail="WhatsApp order confirmation send failed")
@@ -84,6 +92,13 @@ async def tracking_update(
         )
         logger.info("WhatsApp tracking update sent | order=%s | phone=%s | tracking=%s", order_number, phone, tracking_number)
         return {"success": True, "response": response}
+    except WhatsAppAPIError as exc:
+        logger.exception("WhatsApp tracking update rejected | order=%s | phone=%s: %s", order_number, phone, exc)
+        status_code = 503 if exc.retryable else 400
+        raise HTTPException(
+            status_code=status_code,
+            detail={"message": str(exc), "metaCode": exc.meta_code, "retryable": exc.retryable},
+        )
     except Exception as exc:
         logger.exception("WhatsApp tracking update send failed | order=%s | phone=%s: %s", order_number, phone, exc)
         raise HTTPException(status_code=502, detail="WhatsApp tracking update send failed")
